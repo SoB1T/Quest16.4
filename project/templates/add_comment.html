@@ -1,0 +1,43 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
+{% block content %}
+<h1>{{ post.heading}}</h1>
+<h6>Rating:{{ post.raiting }}</h6>
+<h5>Author:<button> <a href="{{post.id}}/author/{{post.author.id}}/subscribe"> Subscribe to author: "{{ post.author.user_id.username }}" </a> </button></h5>
+{% if is_author_post %}<button><a href="{{post.id}}/delete"> Delete </a></button>{% endif %}
+<h5>Date:{{ post.date|date:'M d Y' }}</h5>
+
+<h6>Categories:
+    {% for category in post.categories.all %}
+        <button> <a href="{{post.id}}/category/{{category.id}}/subscribe"> Subscribe to a category: "{{ category.name }}"</a> </button>
+    {% endfor %}
+</h6>
+
+{{ post.text}}
+{% if is_comments %}
+<h5>Comments:</h5>
+
+{% for comment in comments %}
+    <h6>User:{{ comment.user_id }} {{ comment.comment_raiting}}<br>
+    {{ comment.text }}<br></h6>
+
+
+{% endfor %}
+{% else %}
+       <h6> No comments</h6>
+{% endif %}
+
+    <h2>Create Comment</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Post Comment">
+    </form>
+
+{% endblock content %}
